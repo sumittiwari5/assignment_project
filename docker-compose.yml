@@ -1,0 +1,35 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: complaint-postgres
+
+    environment:
+      POSTGRES_DB: complaint_db
+      POSTGRES_USER: complaint_user
+      POSTGRES_PASSWORD: complaint_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build:
+      context: ./backend
+
+    container_name: complaint-backend
+
+    environment:
+      DATABASE_URL: postgresql://complaint_user:complaint_password@postgres:5432/complaint_db
+
+    ports:
+      - "5000:5000"
+
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
