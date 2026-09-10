@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-const API_URL = "http://localhost:5000";
+const API_URL = "/api";
 
 function App() {
   const [complaints, setComplaints] = useState([]);
@@ -16,7 +16,7 @@ function App() {
 
   const fetchComplaints = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/complaints`);
+      const response = await fetch(`${API_URL}/complaints`);
       const data = await response.json();
 
       setComplaints(data);
@@ -42,7 +42,7 @@ function App() {
     setMessage("");
 
     try {
-      const response = await fetch(`${API_URL}/api/complaints`, {
+      const response = await fetch(`${API_URL}/complaints`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

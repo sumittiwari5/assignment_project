@@ -31,5 +31,17 @@ services:
     depends_on:
       - postgres
 
+  frontend:
+    build:
+      context: ./frontend
+
+    container_name: complaint-forntend
+
+    ports:
+      - "3000:80"
+
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
