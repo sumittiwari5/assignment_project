@@ -22,3 +22,6 @@ kubectl create configmap postgres-init \
 kubectl get configmap postgres-init
 # then:
 kubectl describe configmap postgres-init
+
+# apply the postgresSql :
+kubectl apply -f k8s/postgres.yaml
