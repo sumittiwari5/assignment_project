@@ -24,7 +24,10 @@ spec:
 
           env:
             - name: DATABASE_URL
-              value: postgresql://complaint_user:complaint_password@postgres:5432/complaint_db
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DATABASE_URL
 
           resources:
             requests:
@@ -44,7 +47,7 @@ spec:
 
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: 5000
             initialDelaySeconds: 5
             periodSeconds: 5

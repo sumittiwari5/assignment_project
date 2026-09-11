@@ -26,6 +26,15 @@ def health():
         "status": "healthy"
     })
 
+@app.route("/ready", methods=["GET"])
+def ready():
+    try:
+        db.session.execute("SELECT 1")
+        return jsonify({"status": "ready"}), 200
+    except Exception:
+        db.session.rollback()
+        return jsonify({"status": "not ready"}), 503
+
 
 @app.route("/api/complaints", methods=["GET"])
 def get_complaints():
