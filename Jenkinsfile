@@ -6,6 +6,7 @@ pipeline {
         FRONTEND_IMAGE = "sumittiwari05/complaint-frontend"
 
         DOCKER_CREDENTIALS = "dockerhub-creds"
+        POSTGRES_CREDENTIALS = "postgres-db-credentials"
     }
 
     stages {
@@ -62,6 +63,32 @@ pipeline {
                         docker push ${FRONTEND_IMAGE}:latest
 
                         docker logout
+                    '''
+                }
+            }
+        }
+
+        stage('Create Kubernetes Secret'){
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: "${POSTGRES_CREDENTIALS}",
+                        usernameVariable: 'POSTGRES_USER',
+                        passwordVariable: 'POSTGRES_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        export KUBECONFIG=/var/lib/jenkins/jenkins-kubeconfig
+
+                        DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/complaint_db"
+
+                        kubectl create secret generic postgres-secret \
+                            --from-literal=POSTGRES_DB=complaint_db \
+                            --from-literal=POSTGRES_USER="$POSTGRES_USER" \
+                            --from-literal=POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+                            --from-literal=DATABASE_URL="$DATABASE_URL" \
+                            --dry-run=client \
+                            -o yaml | kubectl apply -f -
                     '''
                 }
             }
