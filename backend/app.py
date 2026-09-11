@@ -29,7 +29,7 @@ def health():
 @app.route("/ready", methods=["GET"])
 def ready():
     try:
-        db.session.execute("SELECT 1")
+        db.session.execute(db.text("SELECT 1"))
         return jsonify({"status": "ready"}), 200
     except Exception:
         db.session.rollback()
