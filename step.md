@@ -25,3 +25,5 @@ kubectl describe configmap postgres-init
 
 # apply the postgresSql :
 kubectl apply -f k8s/postgres.yaml
+
+# checking the github webhook trigger
