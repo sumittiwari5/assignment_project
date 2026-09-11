@@ -6,7 +6,6 @@ pipeline {
         FRONTEND_IMAGE = "sumittiwari05/complaint-frontend"
 
         DOCKER_CREDENTIALS = "dockerhub-creds"
-        KUBE_CREDENTIALS   = "minikube-kubeconfig"
     }
 
     stages {
@@ -70,29 +69,24 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([
-                    string(
-                        credentialsId: "${KUBE_CREDENTIALS}",
-                        variable: 'KUBECONFIG_CONTENT'
-                    )
-                ]) {
-                    sh '''
-                        set +x
+                sh '''
+                    export KUBECONFIG=/var/lib/jenkins/jenkins-kubeconfig
 
-                        printf '%s' "$KUBECONFIG_CONTENT" > kubeconfig
+                    kubectl apply -f k8s/backend.yaml
+                    kubectl apply -f k8s/frontend.yaml
 
-                        echo "kubeconfig file size"
-                        wc -c kubeconfig
+                    kubectl set image deployment/backend \
+                        backend=${BACKEND_IMAGE}:${BUILD_NUMBER}
 
+                    kubectl set image deployment/frontend \
+                        frontend=${FRONTEND_IMAGE}:${BUILD_NUMBER}
 
-                        echo "kubeconfig line count:"
-                        wc -l kubeconfig 
-
-                        echo "testing kubeconfig:"
-                        kubectl --kubeconfig="$WORKSPACE/kubeconfig" config current-context
+                    kubectl rollout status deployment/backend --timeout=120s
+                    kubectl rollout status deployment/frontend --timeout=120s
                     
-                    '''
-                }
+                    kubectl get pods
+                    kubectl get services
+                '''
             }
         }
     }
