@@ -80,7 +80,7 @@ pipeline {
                     sh '''
                         export KUBECONFIG=/var/lib/jenkins/jenkins-kubeconfig
 
-                        DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/complaint_db"
+                        DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres-broken:5432/complaint_db"
 
                         kubectl create secret generic postgres-secret \
                             --from-literal=POSTGRES_DB=complaint_db \
