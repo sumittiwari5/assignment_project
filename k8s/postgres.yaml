@@ -30,13 +30,13 @@ spec:
                   key: POSTGRES_DB
 
             - name: POSTGRES_USER
-              valueForm:
+              valueFrom:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_USER
 
             - name: POSTGRES_PASSWORD
-              valueForm:
+              valueFrom:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
