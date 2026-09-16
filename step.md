@@ -27,3 +27,4 @@ kubectl describe configmap postgres-init
 kubectl apply -f k8s/postgres.yaml
 
 # checking the github webhook trigger
+# after it we need to give the kubeconfig file to the jenkins 
